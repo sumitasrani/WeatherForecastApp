@@ -1,12 +1,15 @@
 import streamlit as st
 import plotly.express as px
-from data import get_data
+from data import get_data, get_place
 
 # Add title
 st.title("Weather Forecast for the Next Days")
 
 # Select Location (temporary only Mumbai)
 place = st.text_input("Place:", help="Select a place")
+
+# Get Lat & Lon data from API
+lat, lon = get_place(place)
 
 col1, col2, col3 = st.columns([2, 0.5, 2])
 
@@ -19,7 +22,7 @@ with col3:
     option = st.selectbox("Select Data to View", ("Temperature", "Weather"))
 
 # Get API data
-info, value = get_data(days)
+info, value = get_data(days, lat, lon)
 
 # Get time
 time = info["hourly"]["time"][:value]
@@ -34,7 +37,7 @@ images = {0: "images/clear.png", 1: "images/clear.png",
           71: "images/snow.png", 73: "images/snow.png", 75: "images/snow.png", 77: "images/snow.png"}
 
 # Add header
-st.header(f"{option} for the next {days} day in Mumbai")
+st.header(f"{option} for the next {days} day in {place}")
 
 # On Selection: Conditional run
 if option == "Temperature":
